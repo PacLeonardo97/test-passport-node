@@ -1,4 +1,5 @@
 import express from "express";
+import User from "./controller/user/userController";
 
 const routes = express.Router();
 
@@ -9,5 +10,6 @@ routes.get("/", (req, res) =>
 );
 
 routes.get("/auth/facebook/callback", passportFacebookLogin);
+routes.get("/olamundo", User.index);
 
 export { routes };
