@@ -1,12 +1,14 @@
+require('dotenv').config();
+
 module.exports = {
-  dialect: "sqlite",
-  host: "localhost",
-  username: "sqlite3",
-  password: "pass",
-  database: "test-passport",
+  dialect: process.env.DB_CONNECTION,
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  storage: process.env.NODE_ENV === 'development' ? 'test-passport.sqlite' : '',
   define: {
     timestamps: true,
     underscored: true,
-    underscoredAll: true,
   },
 };

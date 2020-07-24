@@ -6,13 +6,17 @@ const findOne = async id => await UserModal.findByPk(id);
 
 const register = async payload => {
   const { name, email, password } = payload;
+
   const user = new UserModal();
+
   user = {
     name,
     email,
     password,
   };
+
   await user.save();
+
   return user;
 };
 
