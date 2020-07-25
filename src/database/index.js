@@ -1,9 +1,23 @@
 import Sequelize from "sequelize";
 import dbConfig from "../config/database";
-import User from "../model/User";
 
-const connection = new Sequelize(dbConfig);
+let models = [];
+const normalizedPath = require("path").resolve("src/model");
+require("fs")
+  .readdirSync(normalizedPath)
+  .forEach((file) => {
+    const importForEach = require(`../model/${file}`);
+    models.push(Object.values(importForEach)[0]);
+  });
 
-User.init(connection);
+class Database {
+  constructor() {
+    this.init();
+  }
+  init() {
+    this.connection = new Sequelize(dbConfig);
+    models.map((model) => model.init(this.connection));
+  }
+}
 
-export default connection;
+export default new Database();
