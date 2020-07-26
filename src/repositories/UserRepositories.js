@@ -1,27 +1,26 @@
-import UserModal from "../model/User";
+import UserModel from "../model/User";
 
-const getAll = async () => await UserModal.findAll();
+const getAll = () => UserModel.findAll();
 
-const findOne = async id => await UserModal.findByPk(id);
+const findByPrimaryKey = (id) => UserModel.findByPk(id);
 
-const register = async payload => {
-  const { name, email, password } = payload;
+const findIdFacebook = async (id) =>
+  UserModel.findOne({ where: { id_facebook: id } });
 
-  const user = new UserModal();
+const register = async (payload) => {
+  const { name, email, password, id_facebook, name_facebook } = payload;
+  const user = new UserModel();
 
-  user = {
-    name,
-    email,
-    password,
-  };
-
+  user.name = name;
+  user.email = email;
+  user.password = password;
+  user.id_facebook = id_facebook;
+  user.name_facebook = name_facebook;
   await user.save();
 
   return user;
 };
 
-const remove = async id => {
-  await UserModal.destroy({ where: { id } });
-};
+const remove = (id) => UserModel.destroy({ where: { id } });
 
-export default { getAll, findOne, register, remove };
+export default { getAll, findByPrimaryKey, findIdFacebook, register, remove };

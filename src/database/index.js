@@ -1,14 +1,15 @@
 import Sequelize from "sequelize";
 import dbConfig from "../config/database";
+import path from 'path';
+import fs from "fs";
 
 let models = [];
-const normalizedPath = require("path").resolve("src/model");
-require("fs")
-  .readdirSync(normalizedPath)
-  .forEach((file) => {
-    const importForEach = require(`../model/${file}`);
-    models.push(Object.values(importForEach)[0]);
-  });
+
+const normalizedPath = path.resolve("src/model");
+fs.readdirSync(normalizedPath).forEach(file => {
+  const importForEach = require(`../model/${file}`);
+  models.push(Object.values(importForEach)[0]);
+});
 
 class Database {
   constructor() {

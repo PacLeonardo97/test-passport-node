@@ -1,19 +1,19 @@
 import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
-import session from "express-session";
-import passport from "passport";
-import FacebookStrategy from "passport-facebook";
 import createLocaleMiddleware from "express-locale";
 import { routes } from "./routes";
 import "./database";
-
-import { facebookOptions, fbCallBack } from "./middleware/passportFacebook";
+import { initialiseAuthentication } from "./auth";
+import cookieParser from "cookie-parser";
+import passport from "passport";
 
 const app = express();
 const port = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
+
+app.use(cookieParser());
 
 app.use(
   createLocaleMiddleware({
@@ -22,16 +22,10 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+
 app.use(routes);
 
-app.use(
-  session({
-    secret: process.env.FACEBOOK_APP_SECRET,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+initialiseAuthentication(app);
 
-passport.use(new FacebookStrategy(facebookOptions, fbCallBack));
-
-app.listen(port, () => console.log("funcionando na porta 8080"));
+app.listen(port, () => console.log(`funcionando na porta ${port}`));

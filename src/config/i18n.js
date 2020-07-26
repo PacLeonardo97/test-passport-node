@@ -1,8 +1,6 @@
-export const messages = {
-  "pt-br": {
-
-  },
-  en: {
-
-  },
+const messages = {
+  "pt-br": {},
+  en: {},
 };
+
+export { messages };
