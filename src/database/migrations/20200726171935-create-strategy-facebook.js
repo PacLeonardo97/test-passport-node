@@ -1,12 +1,22 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('users', { 
+    return queryInterface.createTable("facebooks", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+        allowNull: false,
+      },
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: { model: "users", key: "id" },
+        onDelete: "CASCADE",
+        allowNull: false,
+      },
+      id_facebook: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       name: {
@@ -28,7 +38,7 @@ module.exports = {
     });
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('users');
-  }
+  down: async (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('facebooks');
+  },
 };

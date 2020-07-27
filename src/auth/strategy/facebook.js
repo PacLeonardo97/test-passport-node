@@ -2,8 +2,9 @@ import passport from "passport";
 import passportFacebook from "passport-facebook";
 
 import UserRepositories from "../../repositories/UserRepositories";
-import UserModel from "../../model/User";
-import { signToken } from "../utils";
+import FacebookRepositories from "../../repositories/FacebookRepositories";
+
+import FacebookModel from "../../model/Facebook";
 
 const FacebookStrategy = passportFacebook.Strategy;
 
@@ -18,19 +19,30 @@ const strategy = (app) => {
   };
 
   const verifyCallback = async (accessToken, refreshToken, profile, done) => {
-    const getUserById = await UserRepositories.findIdFacebook(profile.id);
-    if (getUserById) {
-      return done(null, { ...getUserById.dataValues, accessToken });
-    }
-
     try {
-      const user = await UserRepositories.register({
-        name: profile.displayName,
-        id_facebook: profile.id,
-        name_facebook: profile.displayName,
-        email: profile.emails[0].value,
-      });
-      return done(null, { ...user.dataValues, accessToken });
+      const getFacebookById = await FacebookRepositories.findByPrimaryKey(
+        profile.id
+      );
+
+      if (!getFacebookById) {
+        const user = await UserRepositories.register({
+          name: profile.displayName,
+          email: profile.emails[0].value,
+        });
+        const facebook = await FacebookRepositories.register({
+          user_id: user.dataValues.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          id_facebook: profile.id,
+        });
+        return done(null, { ...user.dataValues, accessToken });
+      }
+      const userId = await UserRepositories.findByPrimaryKey(
+        getFacebookById.dataValues.user_id
+      );
+      if (userId) {
+        return done(null, { ...userId.dataValues, accessToken });
+      }
     } catch (error) {
       return done(error, null);
     }
@@ -50,7 +62,6 @@ const strategy = (app) => {
       return res.status(200).json(req.user);
     },
     (err, req, res, next) => {
-      console.log("error callback", err);
       if (err) {
         res.status(400).json({ message: err.message });
       }

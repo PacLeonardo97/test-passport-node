@@ -1,5 +1,4 @@
 import UserRepositories from "../../repositories/UserRepositories";
-import passport from "passport";
 
 class User {
   async index(req, res) {

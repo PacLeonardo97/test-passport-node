@@ -1,5 +1,4 @@
 import passport from "passport";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import UserRepositories from "../repositories/UserRepositories";
 
@@ -18,12 +17,6 @@ const setup = () => {
   });
 };
 
-const signToken = (user) => {
-  return jwt.sign({ data: user }, process.env.JWT_SECRET, {
-    expiresIn: 604800,
-  });
-};
-
 const hashPassword = async (password) => {
   if (!password) {
     throw new Error("Password was not provided");
@@ -37,4 +30,4 @@ const verifyPassword = async (candidate, actual) => {
   return await bcrypt.compare(candidate, actual);
 };
 
-export { setup, signToken, hashPassword, verifyPassword };
+export { setup, hashPassword, verifyPassword };

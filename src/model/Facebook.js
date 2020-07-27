@@ -1,9 +1,10 @@
 import { Model, DataTypes } from "sequelize";
 
-class User extends Model {
+class Facebook extends Model {
   static init(sequelize) {
     super.init(
       {
+        id_facebook: DataTypes.INTEGER,
         name: DataTypes.STRING,
         email: DataTypes.STRING,
         created_at: DataTypes.DATE,
@@ -15,9 +16,9 @@ class User extends Model {
     );
     return this;
   }
-  static associate(models) {
-    this.hasOne(models.Facebook, { foreignKey: "user_id", as: "facebook",  });
+  static associate(models){
+    this.belongsTo(models.User, { foreignKey: 'id', as: 'user' });;
   }
 }
 
-export default User;
+export default Facebook;
